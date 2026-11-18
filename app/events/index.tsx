@@ -1,20 +1,50 @@
 import { useState } from 'react';
-import { FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { router } from 'expo-router';
 import EventRow from '../../src/components/EventRow';
-import { events } from '../../src/data/events';
+import { useEvents } from '../../src/hooks/useEvents';
 
 export default function EventsScreen() {
+  const { data, isPending, isError, error, refetch, isRefetching } = useEvents();
   const [savedIds, setSavedIds] = useState<number[]>([]);
   const [query, setQuery] = useState('');
-
-  const visible = events.filter((e) =>
-    e.title.toLowerCase().includes(query.toLowerCase())
-  );
 
   function toggleSaved(id: number) {
     setSavedIds((ids) => (ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]));
   }
+
+  if (isPending) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator />
+        <Text>Loading events</Text>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.center}>
+        <Text>Could not load events</Text>
+        <Text>{error.message}</Text>
+        <Pressable onPress={() => refetch()} style={styles.retry}>
+          <Text>Try again</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  const visible = data.filter((e) =>
+    e.title.toLowerCase().includes(query.toLowerCase())
+  );
 
   return (
     <View style={styles.container}>
@@ -30,6 +60,8 @@ export default function EventsScreen() {
       <FlatList
         data={visible}
         keyExtractor={(e) => String(e.id)}
+        refreshing={isRefetching}
+        onRefresh={() => refetch()}
         renderItem={({ item }) => (
           <EventRow
             event={item}
@@ -46,6 +78,16 @@ export default function EventsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 16, backgroundColor: '#f9fafb' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 16 },
+  retry: {
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#9ca3af',
+    borderRadius: 8,
+  },
   input: {
     minHeight: 44,
     borderWidth: 1,
