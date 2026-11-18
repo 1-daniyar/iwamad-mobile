@@ -1,6 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEvents } from '../../src/hooks/useEvents';
+import HolidayNote from '../../src/components/HolidayNote';
 
 export default function EventScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -28,6 +29,7 @@ export default function EventScreen() {
   }
 
   const event = data.find((e) => e.id === Number(id));
+  
 
   if (!event) {
     return (
@@ -46,6 +48,9 @@ export default function EventScreen() {
       <Text style={styles.line}>Date: {event.date}</Text>
       <Text style={styles.line}>Place: {event.place}</Text>
       <Text style={styles.line}>Seats: {event.seats}</Text>
+              <Text style={styles.line}>Date: {event.date}</Text>
+      <HolidayNote date={event.date} />
+      <Text style={styles.line}>Place: {event.place}</Text>
     </View>
   );
 }

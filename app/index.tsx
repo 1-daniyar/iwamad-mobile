@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { Link } from 'expo-router';
 
+
 export default function HomeScreen() {
   const [likes, setLikes] = useState(0);
 
