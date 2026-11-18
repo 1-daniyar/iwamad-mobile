@@ -53,14 +53,15 @@ export default function EventsScreen() {
         autoCapitalize="none"
         autoCorrect={false}
       />
-      <Text style={styles.hint}>Long-press an event to save it. Saved: {savedIds.length}</Text>
-      <FlatList
+<Text style={styles.hint}>Swipe or long-press an event to save it. Saved: {savedIds.length}</Text>   
+   <FlatList
         data={visible}
         keyExtractor={(e) => String(e.id)}
         refreshing={isRefetching}
         onRefresh={() => refetch()}
         renderItem={({ item }) => (
           <EventRow
+          onToggleSaved={() => toggleSaved(item.id)}
             event={item}
             saved={savedIds.includes(item.id)}
             onPress={() => router.push(`/events/${item.id}`)}
