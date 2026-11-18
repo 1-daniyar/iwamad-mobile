@@ -19,7 +19,16 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "experiments": {
+      "baseUrl": "/iwamad-mobile"
+    },
+    "scheme": "iwamad-mobile",
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
